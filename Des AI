@@ -1,0 +1,276 @@
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DraggableWindowGui"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create a Frame for the main window
+local frame = Instance.new("Frame")
+frame.Name = "DraggableFrame"
+frame.Size = UDim2.new(0, 500, 0, 300) -- Size of the frame
+frame.Position = UDim2.new(0.5, -250, 0.5, -150) -- Centered position
+frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey color
+frame.BorderSizePixel = 2
+frame.Parent = screenGui
+
+-- Create a Title Bar for dragging
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 30) -- Full width, 30 pixels high
+titleBar.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Darker grey color
+titleBar.BorderSizePixel = 2
+titleBar.Parent = frame
+
+-- Create a TextLabel for the title
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, -30, 1, 0) -- Full size of the title bar minus the close button
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Des AI gui"
+titleLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+titleLabel.Font = Enum.Font.SourceSans
+titleLabel.TextSize = 18
+titleLabel.Parent = titleBar
+
+-- Create a Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 30, 1, 0) -- 30x30 pixels
+closeButton.Position = UDim2.new(1, -30, 0, 0) -- Right side of the title bar
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.new(1, 1, 1) -- White text
+closeButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red background
+closeButton.Font = Enum.Font.SourceSans
+closeButton.TextSize = 18
+closeButton.Parent = titleBar
+
+-- Create a Tab Bar
+local tabBar = Instance.new("Frame")
+tabBar.Name = "TabBar"
+tabBar.Size = UDim2.new(0, 50, 1, -30) -- 50 pixels wide, full height minus the title bar
+tabBar.Position = UDim2.new(0, 0, 0, 30) -- Below the title bar
+tabBar.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Darker grey color
+tabBar.BorderSizePixel = 2
+tabBar.Parent = frame
+
+-- Create Tab Buttons
+local tab1Button = Instance.new("TextButton")
+tab1Button.Name = "Tab1Button"
+tab1Button.Size = UDim2.new(1, 0, 0, 50) -- Full width, 50 pixels high
+tab1Button.Position = UDim2.new(0, 0, 0, 0)
+tab1Button.Text = "</>"
+tab1Button.TextColor3 = Color3.new(1, 1, 1) -- White text
+tab1Button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey color
+tab1Button.Font = Enum.Font.SourceSans
+tab1Button.TextSize = 18
+tab1Button.Parent = tabBar
+
+local tab2Button = Instance.new("TextButton")
+tab2Button.Name = "Tab2Button"
+tab2Button.Size = UDim2.new(1, 0, 0, 50) -- Full width, 50 pixels high
+tab2Button.Position = UDim2.new(0, 0, 0, 50)
+tab2Button.Text = "<<>>"
+tab2Button.TextColor3 = Color3.new(1, 1, 1) -- White text
+tab2Button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey color
+tab2Button.Font = Enum.Font.SourceSans
+tab2Button.TextSize = 18
+tab2Button.Parent = tabBar
+
+-- Create a Frame for Tab1 content (with TextBox)
+local tab1Content = Instance.new("Frame")
+tab1Content.Name = "Tab1Content"
+tab1Content.Size = UDim2.new(1, -50, 1, -30) -- Full size minus the tab bar and title bar
+tab1Content.Position = UDim2.new(0, 50, 0, 30) -- Next to the tab bar and below the title bar
+tab1Content.BackgroundTransparency = 1
+tab1Content.Parent = frame
+
+-- Create a TextBox in the center of Tab1Content
+local textBox = Instance.new("TextBox")
+textBox.Name = "TextBox"
+textBox.Size = UDim2.new(0, 300, 0, 150) -- Size of the TextBox
+textBox.Position = UDim2.new(0.5, -150, 0.5, -75) -- Centered position
+textBox.BackgroundColor3 = Color3.new(1, 1, 1) -- White background
+textBox.TextColor3 = Color3.new(0, 0, 0) -- Black text
+textBox.Text = "Enter Code here..."
+textBox.Font = Enum.Font.SourceSans
+textBox.TextSize = 18
+textBox.TextWrapped = true -- Ensure text wraps within the TextBox
+textBox.MultiLine = true -- Allow multiple lines of text
+textBox.Parent = tab1Content
+
+-- Create an Execute Button in Tab1Content
+local executeButton = Instance.new("TextButton")
+executeButton.Name = "ExecuteButton"
+executeButton.Size = UDim2.new(0, 100, 0, 30) -- Size of the button
+executeButton.Position = UDim2.new(0.5, -50, 1, -40) -- Below the text box
+executeButton.Text = "Execute"
+executeButton.TextColor3 = Color3.new(1, 1, 1) -- White text
+executeButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey color
+executeButton.Font = Enum.Font.SourceSans
+executeButton.TextSize = 18
+executeButton.Parent = tab1Content
+
+-- Function to execute Lua code from the TextBox
+local function executeLuaCode()
+    local code = textBox.Text
+    local success, result = pcall(function()
+        return loadstring(code)()
+    end)
+    if success then
+        print("Code executed successfully:", result)
+    else
+        warn("Error executing code:", result)
+    end
+end
+
+executeButton.MouseButton1Click:Connect(executeLuaCode)
+
+-- Create a Frame for Tab2 content (with single customizable button)
+local tab2Content = Instance.new("Frame")
+tab2Content.Name = "Tab2Content"
+tab2Content.Size = UDim2.new(1, -50, 1, -30) -- Full size minus the tab bar and title bar
+tab2Content.Position = UDim2.new(0, 50, 0, 30) -- Next to the tab bar and below the title bar
+tab2Content.BackgroundTransparency = 1
+tab2Content.Visible = false -- Initially hidden
+tab2Content.Parent = frame
+
+-- Create a Label above the button in Tab2Content
+local tab2Label = Instance.new("TextLabel")
+tab2Label.Name = "Tab2Label"
+tab2Label.Size = UDim2.new(1, 0, 0, 30) -- Full width, 30 pixels high
+tab2Label.Position = UDim2.new(0, 0, 0, 0) -- Top-left corner
+tab2Label.Text = "ReelHacks"
+tab2Label.TextColor3 = Color3.new(1, 1, 1) -- White text
+tab2Label.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey background
+tab2Label.Font = Enum.Font.SourceSans
+tab2Label.TextSize = 18
+tab2Label.Parent = tab2Content
+
+-- Create the single customizable button in Tab2Content
+local button = Instance.new("TextButton")
+button.Name = "Button"
+button.Size = UDim2.new(0, 120, 0, 50) -- Longer button
+button.Position = UDim2.new(0.5, -60, 0.5, -25) -- Centered position
+button.Text = "Speed 50"
+button.TextColor3 = Color3.new(1, 1, 1) -- White text
+button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark grey color
+button.Font = Enum.Font.SourceSans
+button.TextSize = 18
+button.Parent = tab2Content
+
+-- Function for button click
+local function buttonClick()
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50
+end
+
+button.MouseButton1Click:Connect(buttonClick)
+
+-- Variables to handle dragging
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+-- Function to update the frame position
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+-- Input events for dragging
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+titleBar.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        updateInput(input)
+    end
+end)
+
+titleBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- Create Resize Handle
+local resizeHandle = Instance.new("Frame")
+resizeHandle.Name = "ResizeHandle"
+resizeHandle.Size = UDim2.new(0, 20, 0, 20)
+resizeHandle.Position = UDim2.new(1, -20, 1, -20)
+resizeHandle.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+resizeHandle.BorderSizePixel = 2
+resizeHandle.Parent = frame
+
+-- Variables to handle resizing
+local resizing = false
+local resizeStart = nil
+local startSize = nil
+
+-- Function to update the frame size
+local function updateResize(input)
+    local delta = input.Position - resizeStart
+    frame.Size = UDim2.new(startSize.X.Scale, startSize.X.Offset + delta.X, startSize.Y.Scale, startSize.Y.Offset + delta.Y)
+end
+
+-- Input events for resizing
+resizeHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        resizing = true
+        resizeStart = input.Position
+        startSize = frame.Size
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                resizing = false
+            end
+        end)
+    end
+end)
+
+resizeHandle.InputChanged:Connect(function(input)
+    if resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+        updateResize(input)
+    end
+end)
+
+resizeHandle.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        resizing = false
+    end
+end)
+
+-- Ensure the window and elements appear in front of other GUI elements
+frame.ZIndex = 1
+titleBar.ZIndex = 2
+titleLabel.ZIndex = 2
+closeButton.ZIndex = 2
+tabBar.ZIndex = 2
+tab1Button.ZIndex = 3
+tab2Button.ZIndex = 3
+tab1Content.ZIndex = 3
+tab2Content.ZIndex = 3
+resizeHandle.ZIndex = 2
+
+-- Tab button functionality
+tab1Button.MouseButton1Click:Connect(function()
+    tab1Content.Visible = true
+    tab2Content.Visible = false
+end)
+
+tab2Button.MouseButton1Click:Connect(function()
+    tab1Content.Visible = false
+    tab2Content.Visible = true
+end)
+
+-- Close button functionality
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
